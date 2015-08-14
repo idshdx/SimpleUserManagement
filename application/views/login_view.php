@@ -20,14 +20,6 @@
           <div class="col-lg-6 col-sm-6">
                <h1>Test Project</h1>
           </div>
-          <div class="col-lg-6 col-sm-6">
-               
-               <ul class="nav nav-pills pull-right" style="margin-top:20px">
-                    <li class="active"><a href="#">Ceva</a></li>
-                    <li><a href="#">Altceva</a></li>
-               </ul>
-               
-          </div>
      </div>
 </div>
 <hr/>
@@ -37,7 +29,7 @@
           <div class="col-lg-4 col-sm-4 well">
           <?php 
           $attributes = array("class" => "form-horizontal", "id" => "loginform", "name" => "loginform");
-          echo form_open("login/index", $attributes);?>
+          echo form_open("login/login_check", $attributes);?>
           <fieldset>
                <legend>Login</legend>
                <div class="form-group">
@@ -46,8 +38,8 @@
                     <label for="txt_username" class="control-label">Username</label>
                </div>
                <div class="col-lg-8 col-sm-8">
-                    <input class="form-control" id="txt_username" name="txt_username" placeholder="Username" type="text" value="<?php echo set_value('txt_username'); ?>" />
-                    <span class="text-danger"><?php echo form_error('txt_username'); ?></span>
+                    <input class="form-control" id="txt_username" name="input_username" placeholder="Username" type="text" value="<?php echo set_value('txt_username'); ?>" />
+                    <span class="text-danger"><?php echo form_error('input_username'); ?></span>
                </div>
                </div>
                </div>
@@ -58,8 +50,8 @@
                <label for="txt_password" class="control-label">Password</label>
                </div>
                <div class="col-lg-8 col-sm-8">
-                    <input class="form-control" id="txt_password" name="txt_password" placeholder="Password" type="password" value="<?php echo set_value('txt_password'); ?>" />
-                    <span class="text-danger"><?php echo form_error('txt_password'); ?></span>
+                    <input class="form-control" id="txt_password" name="input_password" placeholder="Password" type="password" value="<?php echo set_value('txt_password'); ?>" />
+                    <span class="text-danger"><?php echo form_error('input_password'); ?></span>
                </div>
                </div>
                </div>

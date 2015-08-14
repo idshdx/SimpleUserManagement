@@ -16,16 +16,20 @@ class login extends CI_Controller
           $this->load->model('login_model');
           $this->load->library('grocery_CRUD');
      }
+     public function index() {
+      $this->load->view('login_view');
 
-     public function index()
+     }
+     
+     public function login_check()
      {
           //get the posted values
-          $username = $this->input->post('txt_username');
-          $password = $this->input->post('txt_password');
+          $username = $this->input->post('input_username');
+          $password = $this->input->post('input_password');
 
           //set validations
-          $this->form_validation->set_rules("txt_username", "Username", "trim|required");
-          $this->form_validation->set_rules("txt_password", "Password", "trim|required");
+          $this->form_validation->set_rules("input_username", "Username", "trim|required");
+          $this->form_validation->set_rules("input_password", "Password", "trim|required");
 
           if ($this->form_validation->run() == FALSE)
           {
@@ -37,44 +41,23 @@ class login extends CI_Controller
                //validation succeeds
                if ($_SERVER['REQUEST_METHOD'] == 'POST')
                {
-                   /* //check if username and password is correct
-                $this->db->where('username', $username);
-                $this->db->where('password', md5($password));
-                $result = $this->db->get('users');
-      
-                    // If we find a user output correct, else output wrong.
-              if($result->num_rows() != 0)
-              {
-                echo 'Correct!';
-              }
-              else
-              {
-                echo 'Wrong!';
-              }
-              }
-              }
-              }  */
                     $user_result = $this->login_model->validate_user($username, $password);
                     if ($user_result > 0) //active user record is present
-                    {
-                         
+                    {    
                          echo 'We found you in the database';
+          
+                        }
+                        $admin_result = $this->login_model->validate_admin($username);
+                        if($admin_result > 0) { //admin
+                          
+                          redirect('login/show_all_users'); 
 
-                         //check if the user has admin rights, if valid send the admin to dashboard
-                        /*$this->db->where('username', $username);
-                        $this->db->where('password', md5($password));
-                        $this->db->where('status', 'admin');
-                        $result = $this->db->get('users');;
-                        if ($result->num_rows() > 0) {
-                        echo 'admin';
-                        } else {
-                          echo 'not admin';
-                        }*/
-                        $admin_result = $this->login_model->validate_admin($username, $password);
-                        if($admin_result > 0) {
-                          redirect('login/show_users'); //show all the users
-                        } else {
-                          redirect('login/show_user');
+                        } else { //not admin
+                          
+                          $data['result'] = $this->login_model->get_info_user($this->input->post('input_username'));
+                          $this->load->view('view_profile', $data);
+                          
+                         
                         }
                         
                     }
@@ -86,39 +69,44 @@ class login extends CI_Controller
                }
                
           }
-     }
-     public function check_password($password1, $password2) {
-      
-      
-     }
-     public function show_users()
-    {
-        $this->grocery_crud->set_table('users');
-        $this->grocery_crud->unset_export();
-        $this->grocery_crud->unset_print();
 
-        $output = $this->grocery_crud->render();
- 
-        $this->_example_output($output);        
-    }
-    public function show_user()
+    public function show_all_users()
     {
-        /*$this->grocery_crud->set_table('users');
-        $this->grocery_crud->unset_fields();
-        $this->grocery_crud->unset_list();
-        $this->grocery_crud->unset_operations();
-        $this->grocery_crud->where('username', $this->input->post('txt_username'));
-        
-        $output = $this->grocery_crud->render();
- 
-        $this->_example_output($output); */ 
-        $this->load->view('user_view');      
-    }
- 
-    function _example_output($output = null)
- 
-    {
-        $this->load->view('our_template.php',$output);    
+        $data['users'] = $this->login_model->get_info_all_users();
+        $this->load->view('admin_view', $data);      
     }
 
-}?>
+    public function edit() {
+      $this->load->view('edit_profile');
+    }
+    
+    /*function edit(){
+      //set validations
+          $this->form_validation->set_rules("name", "Name", "trim");
+          $this->form_validation->set_rules("password1", "First passoword", "trim|required");
+          $this->form_validation->set_rules("password2", "Second passoword", "trim|required");
+          $this->form_validation->set_rules("email", "Email", "trim");
+          $this->form_validation->set_rules("description", "Description", "trim");
+          $this->form_validation->set_rules("phone_number", "Phone Number", "numeric|trim");
+
+      
+      //get the posted values into an array(except passwords) for further use
+          $data = array(
+          'name' => $this->input->post('name'),
+          'email' => $this->input->post('email'),
+          'phone_number' => $this->input->post('phone_number'),
+          'description' => $this->input->post('description') );
+          
+          $password1 = $this->input->post('password1');
+          $password2 = $this->input->post('password2');
+
+          $this->load->model('login_model');
+          if($this->login_model->update_data($data)) {
+            echo 'OK';
+          } else {
+            echo 'Error';
+          }        
+    }*/
+
+}
+?>
