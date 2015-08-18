@@ -15,54 +15,47 @@
      </style>
 </head>
 <body>
-<div class="container">
+<!-- <div class="container">
      <div class="row">
           <div class="col-lg-6 col-sm-6">
                <h1>Test Project</h1>
           </div>
      </div>
-</div>
+</div> -->
 <hr/>
+<br><br>
 
-<div class="container">
-     <div class="row">
-          <div class="col-lg-4 col-sm-4 well">
+<div class="container" style="padding-top: 60px;">
+  <h1 class="page-header">Login</h1>
+  <div class="row">
           <?php 
           $attributes = array("class" => "form-horizontal", "id" => "loginform", "name" => "loginform");
-          echo form_open("login/login_check", $attributes);?>
-          <fieldset>
-               <legend>Login</legend>
-               <div class="form-group">
-               <div class="row colbox">
-               <div class="col-lg-4 col-sm-4">
-                    <label for="txt_username" class="control-label">Username</label>
-               </div>
-               <div class="col-lg-8 col-sm-8">
-                    <input class="form-control" id="txt_username" name="input_username" placeholder="Username" type="text" value="<?php echo set_value('txt_username'); ?>" />
-                    <span class="text-danger"><?php echo form_error('input_username'); ?></span>
-               </div>
-               </div>
-               </div>
-               
-               <div class="form-group">
-               <div class="row colbox">
-               <div class="col-lg-4 col-sm-4">
-               <label for="txt_password" class="control-label">Password</label>
-               </div>
-               <div class="col-lg-8 col-sm-8">
-                    <input class="form-control" id="txt_password" name="input_password" placeholder="Password" type="password" value="<?php echo set_value('txt_password'); ?>" />
-                    <span class="text-danger"><?php echo form_error('input_password'); ?></span>
-               </div>
-               </div>
-               </div>
-                              
-               <div class="form-group">
-               <div class="col-lg-12 col-sm-12 text-center">
-                    <input id="btn_login" name="btn_login" type="submit" class="btn btn-default" value="Login" />
-                    <input id="btn_cancel" name="btn_cancel" type="reset" class="btn btn-default" value="Retrieve password" />
-               </div>
-               </div>
-          </fieldset>
+          echo form_open("main/login_check", $attributes);?>
+              
+              <div class="form-group">
+                <label class="col-lg-3 control-label">Username:</label>
+                <div class="col-lg-4">
+                  <input class="form-control" id="input_username" name="input_username" placeholder="Username" type="text" value="<?php echo set_value('input_username'); ?>" />
+                  <span class="text-danger"><?php echo form_error('input_username'); ?></span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-3 control-label">Password:</label>
+                <div class="col-lg-4">
+                  <input class="form-control" id="input_password" name="input_password" placeholder="Password" type="password" value="<?php echo set_value('input_password'); ?>" />
+                  <span class="text-danger"><?php echo form_error('input_password'); ?></span>
+                </div>
+              </div>  
+
+              <div class="form-group">
+                <label class="col-md-3 control-label"></label>
+                <div class="col-md-8">
+                    <input id="btn_cancel" name="btn_cancel" type="reset" class="btn btn-default" value="Retrieve password" />     
+                    <span></span>
+                    <input id="btn_login" name="btn_login" type="submit" class="btn btn-primary" value="Login" />
+                </div>
+              </div>
+
           <?php echo form_close(); ?>
           </div>
      </div>
@@ -72,5 +65,22 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <!--load bootstrap.js-->
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script>
+ $(document).ready(function(){
+      $('#btn_login').attr('disabled', true);
+      $('#input_username').keyup(function(){
+        if(($('#input_username').val().length != 0) && ($('#input_password').val().length != 0))
+          $('#btn_login').attr('disabled', false);
+        else
+          $('#btn_login').attr('disabled', true);        
+      });
+      $('#input_password').keyup(function(){
+        if(($('#input_username').val().length != 0) && ($('#input_password').val().length != 0))
+          $('#btn_login').attr('disabled', false);
+        else
+          $('#btn_login').attr('disabled', true);        
+      });
+    });
+</script>
 </body>
 </html>
