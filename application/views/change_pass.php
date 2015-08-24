@@ -6,6 +6,7 @@
      <title>Login Form</title>
      <!--link the bootstrap css file-->
      <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+     <script type="text/javascript" src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
      
      <style type="text/css">
      .colbox {
@@ -26,16 +27,18 @@
 <br><br>
 
 <div class="container" style="padding-top: 60px;">
-  <h1 class="page-header">Login</h1>
+  <h1 class="page-header">Change password</h1>
+  <div id="flash" class="text-success" style="display:none;">Data Saved Successfully</div>
+  </div>
   <div class="row">
           <?php 
-          $attributes = array("class" => "form-horizontal", "id" => "change_pass", "name" => "change_pass_form");
-          echo form_open("main/login_check", $attributes);?>
+          $attributes = array("class" => "form-horizontal", "id" => "form", "name" => "form");
+          echo form_open("", $attributes);?>
               
               <div class="form-group">
                 <label class="col-lg-3 control-label">Old Password:</label>
                 <div class="col-lg-4">
-                  <input class="form-control" id="input_username" name="input_username" placeholder="Old password" type="password" value="<?php echo set_value('input_oldpassword'); ?>" />
+                  <input class="form-control" id="input_oldpassword" name="input_oldpassword" placeholder="Old password" type="password" value="<?php echo set_value('input_oldpassword'); ?>" />
                   <span class="text-danger"><?php echo form_error('input_oldpassword'); ?></span>
                 </div>
               </div>
@@ -57,9 +60,9 @@
               <div class="form-group">
                 <label class="col-md-3 control-label"></label>
                 <div class="col-md-8">
-                    <input id="btn_cancel" name="btn_cancel" formaction="<?php echo site_url('edit_profile')?>" type="submit" class="btn btn-default" value="Go back to your profile" />     
+                    <input id="btn_cancel" name="action" formaction="<?php echo site_url('main')?>" type="button" class="btn btn-default" value="Back" />     
                     <span></span>
-                    <input id="btn_login" name="btn_login" formaction="<?php echo site_url('edit/new_password')?>" type="submit" class="btn btn-primary" value="Update password" />
+                    <input id="btn_update" name="action" type="button" class="btn btn-primary" value="Update password" />
                 </div>
               </div>
 
@@ -68,24 +71,71 @@
      </div>
 </div>
      
-<!--load jQuery library-->
+<!--load Assets-->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<!--load bootstrap.js-->
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="<?php echo base_url('assets/jquery/jquery.validate.js')?>"></script>
 <script>
+
+$('#form').validate({
+        rules: {
+          input_oldpassword: {
+            minlength: 4,
+            maxlength: 20,
+          },
+          input_newpassword1: {
+            minlength: 4,
+            maxlength: 20,
+          },
+          input_newpassword2: {
+            minlength: 4,
+            maxlength: 20,
+            equalTo: "#input_newpassword1",
+          }
+          
+        }
+      });
+
+ $("#btn_update").click(function(){ 
+        
+
+       // ajax call
+          $.ajax({
+            url : "<?php echo site_url('edit/new_password')?>",
+            type: "POST",
+            data: $('#form').serialize(),
+            dataType: "JSON",
+            success: function(data)
+            {    
+              $("#form").append(data);
+              $('#flash').css("display","block");;
+              setTimeout(function () {
+              $('#flash').slideUp();`enter code here`}, 2000);
+            },
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                alert('Error adding / update data');
+            }
+        });//end of ajax call
+    }); 
+    
+      $("#btn_cancel").click(function(){ 
+       window.location.href='<?php echo site_url('main')?>';
+    }); 
+
  $(document).ready(function(){
-      $('#btn_login').attr('disabled', true);
+      $('#btn_update').attr('disabled', true);
       $('#input_newpassword1').keyup(function(){
         if(($('#input_newpassword1').val().length != 0) && ($('#input_newpassword2').val().length != 0))
-          $('#btn_login').attr('disabled', false);
+          $('#btn_update').attr('disabled', false);
         else
-          $('#btn_login').attr('disabled', true);        
+          $('#btn_update').attr('disabled', true);        
       });
       $('#input_newpassword2').keyup(function(){
         if(($('#input_newpassword1').val().length != 0) && ($('#input_newpassword2').val().length != 0))
-          $('#btn_login').attr('disabled', false);
+          $('#btn_update').attr('disabled', false);
         else
-          $('#btn_login').attr('disabled', true);        
+          $('#btn_update').attr('disabled', true);        
       });
     });
 </script>

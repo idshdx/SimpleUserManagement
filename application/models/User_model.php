@@ -1,9 +1,7 @@
 <?php
 Class User_model extends CI_Model
 {   
-    var $table = 'users';
-    var $column = array('username','name','email','phone_number','description','username','type_id','age_id');
-    var $order = array('id' => 'desc');
+    
 
 	function __construct() {
 
@@ -45,8 +43,18 @@ Class User_model extends CI_Model
         
         return $query->row_array();
     }
+    
+    //Change password
 
-    //function to update record
+    function update_password($oldpassword, $newpassword) {
+        $newpassword = array( 'password' => $newpassword);
+        $this->db->from('users');
+        $this->db->where('password', $oldpassword);
+        $this->db->update('users', $newpassword);
+        return true;
+    }
+
+    //function to update a record
     
     function update_data($data, $password) {
         $this->db->from('users');
@@ -74,11 +82,4 @@ Class User_model extends CI_Model
         $this->db->close();
     }
 
-    function get_table($per_page,$offset)
-    {
-        $this->db->order_by('role','desc');
-        $query=$this->db->get('users',$per_page,$offset);
-
-        return $query->result(); //do this
-    }
 }

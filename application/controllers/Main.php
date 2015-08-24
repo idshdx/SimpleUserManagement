@@ -29,8 +29,8 @@ class main extends CI_Controller
           $password = $this->input->post('input_password');
 
           //set validations
-          $this->form_validation->set_rules("input_username", "Username", "trim|required");
-          $this->form_validation->set_rules("input_password", "Password", "trim|required");
+          $this->form_validation->set_rules("input_username", "Username", "trim|required|min_length[4]");
+          $this->form_validation->set_rules("input_password", "Password", "trim|required|min_length[4]");
 
           if ($this->form_validation->run() == FALSE)
           {
@@ -66,6 +66,11 @@ class main extends CI_Controller
                }    
           }
     }
+    
+   /* function get_info_user(){
+      $data = $this->user_model->get_info_user($this->input->post('input_username'));
+      echo json_encode($data);
+    }*/
 
     public function show_all_users() { //showing all users for admin_view
 
@@ -76,36 +81,36 @@ class main extends CI_Controller
 
     function edit() { //controller for edit function(update in db)
 
-      //get only the posted values into an array
+      
+
+      //get only the posted values into an array and set the validations for each one
           if(!empty($this->input->post('name'))) { 
             $data['name'] = $this->input->post('name');
+            $this->form_validation->set_rules("name", "Name", "trim|min_length[4]");
           };
           if(!empty($this->input->post('email'))) { 
             $data['email'] = $this->input->post('email');
+            $this->form_validation->set_rules("email", "Email", "trim|valid_email|min_length[8]");
           };
           
           if(!empty($this->input->post('phone_number'))) { 
             $data['phone_number'] = $this->input->post('phone_number');
+            $this->form_validation->set_rules("phone_number", "Phone Number", "numeric|trim|min_length[10]|max_length[10]");
           };
           if(!empty($this->input->post('description'))) { 
             $data['description'] = $this->input->post('description');
+            $this->form_validation->set_rules("description", "Description", "trim|min_length[4]");
           };
           $data['age_id'] = $this->input->post('user_age_category');
           $password2 = md5($this->input->post('password2'));
           $password1 = md5($this->input->post('password1'));
-          
 
-      //set validations
-          $this->form_validation->set_rules("name", "Name", "trim");
-          $this->form_validation->set_rules("password1", "First password", "trim|required");
-          $this->form_validation->set_rules("password2", "Second password", "trim|required");
-          $this->form_validation->set_rules("email", "Email", "trim");
-          $this->form_validation->set_rules("description", "Description", "trim");
-          $this->form_validation->set_rules("phone_number", "Phone Number", "numeric|trim");
+          $this->form_validation->set_rules("password1", "First password", "trim|required|min_length[4]");
+          $this->form_validation->set_rules("password2", "Second password", "trim|required|min_length[4]");
 
           if ($this->form_validation->run() == FALSE) { //validation fails 
 
-               echo 'Nu s-a trecut de validare';
+               echo 'Eroare PHP: Nu s a trecut de validare';
 
           } else {
 
@@ -160,35 +165,29 @@ class main extends CI_Controller
             }*/
       }
       
+      public function forget()
+      {     
+        $this->load->view('retrieve_password');
+      }
+      public function retrieve() {
+        $email = $this->input->post('email');
+
+        date_default_timezone_set('GMT');
+        $this->load->helper('string');
+        $password= random_string('alnum', 16);
+        $this->db->where('email', $email);
+        $this->db->update('users',array('password'=>MD5($password)));
+        
+        $this->load->library('email');
+        $this->email->from('test@project.com', 'Admin');
+        $this->email->to($email);     
+        $this->email->subject('Password reset');
+        $this->email->message('You have requested the new password, Here is you new password:'. $password); 
+        $this->email->send();
+      }
 
       public function test() {
         $this->load->view('test');
       }
-
-      public function admin_list() { //table generated in controller
-
-        $this->table->set_heading('Username', 'Name', 'Email', 'Phone Number', 'Description','Role','Age Category','Actions');
-
-        $result = $this->user_model->get_table($per_page,$offset);
-
-        foreach($result as $row) { 
-
-        $links  = anchor('main/edit/' ,'Edit');
-        $links .= anchor('main/delete/', 'Delete');
-
-        $this->table->add_row(
-            $row->username,
-            $row->name,
-            $row->email,
-            $row->phone_number,
-            $row->description,
-            $row->type_id,
-            $row->age_id,
-            $links   
-        );
-        }
-        $viewdata['#admintable'] = $this->table->generate();
-    
-    }
 }
 ?>

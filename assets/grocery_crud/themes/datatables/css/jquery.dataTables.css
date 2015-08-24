@@ -2,6 +2,10 @@
 /*
  * Table
  */
+
+th.hide_me, td.hide_me {
+	display: none;
+}
 table.dataTable {
 	margin: 0 auto;
 	clear: both;

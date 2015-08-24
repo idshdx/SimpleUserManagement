@@ -370,3 +370,6 @@ div.FixedHeader_Cloned table {
 	margin: 0 !important
 }
 
+tr.hide_me, td.hide_me {
+    display : none !important;
+}

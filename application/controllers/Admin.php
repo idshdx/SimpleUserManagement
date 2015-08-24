@@ -29,16 +29,19 @@ class Admin extends CI_Controller {
 		foreach ($list as $admin) {
 			$no++;
 			$row = array();
+			$row[] = $admin->user_id;
 			$row[] = $admin->username;
 			$row[] = $admin->name;
 			$row[] = $admin->email;
 			$row[] = $admin->phone_number;
 			$row[] = $admin->description;
+		
 
 			//add html for action
 			$row[] = '<a class="btn btn-sm btn-danger" href="javascript:void()" title="Hapus" onclick="delete_user('."'".$admin->user_id."'".')"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
 		
 			$data[] = $row;
+
 		}
 
 		$output = array(
@@ -67,7 +70,7 @@ class Admin extends CI_Controller {
 				'description' => $this->input->post('description'),
 				'type_id' => $this->input->post('user_type'),
 				'age_id' => $this->input->post('user_age_category'),
-				'password' => $this->input->post('password1')
+				'password' => md5($this->input->post('password1'))
 			);
 		$insert = $this->admin->save($data);
 		echo json_encode(array("status" => TRUE));
@@ -76,6 +79,7 @@ class Admin extends CI_Controller {
 	public function ajax_update()
 	{
 		$data = array(
+				
 				'username' => $this->input->post('username'),
 				'name' => $this->input->post('name'),
 				'email' => $this->input->post('email'),
